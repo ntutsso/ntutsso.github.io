@@ -459,18 +459,21 @@ img { max-width: 100%; }
   <div class="sec">
     <div class="wrap">
       <div class="sec-head"><h2>Lab News</h2><span class="tag">2026</span></div>
-      <div class="news">
-        <div class="news-item">
-          <time datetime="2026-02-01">Feb 1, 2026</time>
-          <p><span class="kind">Milestone</span>Chen's Research Group — SSO Lab established at the Department of Molecular Science and Engineering, NTUT.</p>
-        </div>
-        <div class="news-item">
-          <time datetime="2026-02-01">Feb 2026</time>
-          <p><span class="kind">People</span>First cohort joins the lab: five master's students and four undergraduate researchers.</p>
-        </div>
+      <!-- Newest first. Entries are also re-sorted automatically by the
+           datetime attribute on page load, so a new item can be pasted
+           anywhere in this list and it will move to the right place. -->
+      <div class="news" id="newsList">
         <div class="news-item">
           <time datetime="2026-07-31">Jul 31, 2026</time>
           <p><span class="kind">Conference</span>The group attends an international conference at Kyushu University, Japan.</p>
+        </div>
+        <div class="news-item">
+          <time datetime="2026-02-15">Feb 2026</time>
+          <p><span class="kind">People</span>First cohort joins the lab: five master's students and four undergraduate researchers.</p>
+        </div>
+        <div class="news-item">
+          <time datetime="2026-02-01">Feb 1, 2026</time>
+          <p><span class="kind">Milestone</span>Chen's Research Group — SSO Lab established at the Department of Molecular Science and Engineering, NTUT.</p>
         </div>
         <div class="news-item">
           <time datetime="2026-01-12">Jan 12, 2026</time>
@@ -1118,6 +1121,28 @@ var PUBS = [
   Array.prototype.forEach.call(group.querySelectorAll(".submenu a"), function(a){
     a.addEventListener("click", closeMenu);
   });
+})();
+
+/* ===================== lab news: newest first ===================== */
+(function sortNews(){
+  var list = document.getElementById("newsList");
+  if(!list) return;
+  var items = Array.prototype.slice.call(list.querySelectorAll(".news-item"));
+  items.sort(function(a, b){
+    function key(el){
+      var t = el.querySelector("time");
+      var d = t && t.getAttribute("datetime");
+      if(!d) return -Infinity;
+      /* accept 2026, 2026-02 and 2026-02-15 */
+      var parts = d.split("-");
+      var y = parseInt(parts[0], 10) || 0;
+      var m = parseInt(parts[1], 10) || 1;
+      var day = parseInt(parts[2], 10) || 1;
+      return y * 10000 + m * 100 + day;
+    }
+    return key(b) - key(a);
+  });
+  items.forEach(function(el){ list.appendChild(el); });
 })();
 
 /* ===================== gallery lightbox ===================== */

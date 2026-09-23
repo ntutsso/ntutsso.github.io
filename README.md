@@ -73,7 +73,7 @@ var ALUMNI = [
 
 ## 四、怎麼更新 Lab News
 
-搜尋 `Lab News`，在 HTML 裡直接改，照現有格式複製一段：
+搜尋 `newsList`，在 HTML 裡直接改，照現有格式複製一段：
 
 ```html
 <div class="news-item">
@@ -82,10 +82,24 @@ var ALUMNI = [
 </div>
 ```
 
-`kind` 那格是標籤文字，可以自己寫（Milestone / People / Conference / Invited talk / Award…）。
+- `kind` 那格是標籤文字，可以自己寫（Milestone / People / Conference / Invited talk / Award…）
+- **`datetime` 一定要填正確**，格式 `年-月-日`（也接受 `2026-09` 或 `2026`）
+- **不用管貼在哪個位置** —— 網頁載入時會自動依 `datetime` 由新到舊重新排序。
+  `datetime` 是給程式看的，前面那段文字是給訪客看的，兩者可以不同寫法
+  （例如 `datetime="2026-02-15"` 顯示成 `Feb 2026`）
 
 ---
 
+## 五、怎麼上線
+
+### 方法 A：Netlify（最快，兩分鐘，不用裝任何東西）
+
+1. 開 https://app.netlify.com/drop
+2. 把整個 `SSOLab_Website` 資料夾拖進去
+3. 馬上會給你一個網址，例如 `random-name-123.netlify.app`
+4. 註冊免費帳號後可以改成 `ntutssolab.netlify.app`，也可以綁自訂網域
+
+之後要更新，重新拖一次資料夾就好。
 
 ### 方法 B：GitHub Pages（適合長期維護，有版本紀錄）
 
