@@ -80,6 +80,13 @@ nav.main a:hover{background:var(--accent-soft); color:var(--accent-ink)}
 nav.main a.active{color:var(--accent-ink); background:var(--accent-soft); font-weight:600}
 .navgroup{position:relative}
 .navgroup > a::after{content:"▾"; font-size:11px; margin-left:6px; opacity:.6}
+/* invisible bridge across the gap between the trigger and the dropdown,
+   so moving the pointer down to the submenu never leaves .navgroup */
+.navgroup::after{
+  content:""; position:absolute; left:0; right:0; top:100%; height:14px;
+  display:none;
+}
+.navgroup.open::after{display:block}
 .submenu{
   position:absolute; top:calc(100% + 6px); left:0; min-width:212px; z-index:90;
   background:var(--surface); border:1px solid var(--line); border-radius:10px;
@@ -1072,21 +1079,44 @@ var PUBS = [
   /* Member dropdown */
   var group = document.getElementById("navgroup");
   var trigger = group.querySelector("a");
+  var closeTimer = null;
+
+  function openMenu(){
+    clearTimeout(closeTimer);
+    group.classList.add("open");
+  }
+  function closeMenu(){
+    clearTimeout(closeTimer);
+    group.classList.remove("open");
+  }
+  /* small grace period so a diagonal path to the submenu doesn't dismiss it */
+  function scheduleClose(){
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(function(){ group.classList.remove("open"); }, 260);
+  }
+
   trigger.addEventListener("click", function(e){
     if(window.innerWidth > 620 && !group.classList.contains("open")){
       e.preventDefault();
-      group.classList.add("open");
+      openMenu();
       return;
     }
-    group.classList.remove("open");
+    closeMenu();
   });
-  group.addEventListener("mouseenter", function(){ if(window.innerWidth > 620) group.classList.add("open"); });
-  group.addEventListener("mouseleave", function(){ group.classList.remove("open"); });
+  group.addEventListener("mouseenter", function(){ if(window.innerWidth > 620) openMenu(); });
+  group.addEventListener("mouseleave", scheduleClose);
+  group.addEventListener("focusin", function(){ if(window.innerWidth > 620) openMenu(); });
+  group.addEventListener("focusout", function(e){
+    if(!group.contains(e.relatedTarget)) scheduleClose();
+  });
   document.addEventListener("click", function(e){
-    if(!group.contains(e.target)) group.classList.remove("open");
+    if(!group.contains(e.target)) closeMenu();
   });
-  group.querySelectorAll(".submenu a").forEach(function(a){
-    a.addEventListener("click", function(){ group.classList.remove("open"); });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") closeMenu();
+  });
+  Array.prototype.forEach.call(group.querySelectorAll(".submenu a"), function(a){
+    a.addEventListener("click", closeMenu);
   });
 })();
 
