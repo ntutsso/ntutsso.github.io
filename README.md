@@ -86,16 +86,6 @@ var ALUMNI = [
 
 ---
 
-## 五、怎麼上線
-
-### 方法 A：Netlify（最快，兩分鐘，不用裝任何東西）
-
-1. 開 https://app.netlify.com/drop
-2. 把整個 `SSOLab_Website` 資料夾拖進去
-3. 馬上會給你一個網址，例如 `random-name-123.netlify.app`
-4. 註冊免費帳號後可以改成 `ntutssolab.netlify.app`，也可以綁自訂網域
-
-之後要更新，重新拖一次資料夾就好。
 
 ### 方法 B：GitHub Pages（適合長期維護，有版本紀錄）
 
